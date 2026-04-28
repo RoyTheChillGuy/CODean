@@ -1,0 +1,279 @@
+import 'package:flutter/material.dart';
+import '../../../../core/constants/app_constants.dart';
+
+class ProfilePage extends StatelessWidget {
+  const ProfilePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF8F9FA),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(height: 60),
+            // Profile Header Card
+            _buildProfileHeader(),
+            const SizedBox(height: 24),
+            // Quick Actions Grid
+            _buildQuickActions(),
+            const SizedBox(height: 32),
+            // Sections
+            _buildSection(
+              title: 'Transaksi',
+              items: [
+                _buildListTile(Icons.shopping_bag_outlined, 'Riwayat Transaksi', isLast: false),
+                _buildListTile(Icons.favorite_border, 'Wishlist', isLast: true),
+              ],
+            ),
+            const SizedBox(height: 24),
+            _buildSection(
+              title: 'Jual & Sewa',
+              items: [
+                _buildListTile(Icons.storefront_outlined, 'Produk Saya', isLast: false),
+                _buildListTile(Icons.swap_horiz, 'Sewaan Saya', isLast: false),
+                _buildListTile(Icons.star_outline, 'Ulasan & Rating', isLast: true),
+              ],
+            ),
+            const SizedBox(height: 24),
+            _buildSection(
+              title: 'Lainnya',
+              items: [
+                _buildListTile(Icons.settings_outlined, 'Pengaturan', isLast: true),
+              ],
+            ),
+            const SizedBox(height: 40),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProfileHeader() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.grey.shade100, width: 2),
+                ),
+                child: const CircleAvatar(
+                  radius: 40,
+                  backgroundImage: AssetImage('images/profile.png'),
+                ),
+              ),
+              const SizedBox(width: 20),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Fulan Ahmad',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: -0.5,
+                      ),
+                    ),
+                    const Text(
+                      'fulan.ahmad@idn.ac.id',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFE3F2FD),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: const [
+                          Icon(Icons.bolt, size: 14, color: Colors.blue),
+                          SizedBox(width: 4),
+                          Text(
+                            'Teknik Multimedia',
+                            style: TextStyle(
+                              color: Colors.blue,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 30),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _buildStatItem('2', 'Produk'),
+              _buildStatItem('4,2', 'Rating'),
+              _buildStatItem('21', 'Transaksi'),
+              _buildStatItem('97%', 'Respon'),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatItem(String value, String label) {
+    return Column(
+      children: [
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          label,
+          style: const TextStyle(
+            color: Colors.grey,
+            fontSize: 12,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildQuickActions() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          _buildQuickActionItem(Icons.history_rounded, 'Riwayat'),
+          _buildQuickActionItem(Icons.favorite_rounded, 'Wishlist'),
+          _buildQuickActionItem(Icons.local_offer_rounded, 'Promo'),
+          _buildQuickActionItem(Icons.help_rounded, 'Bantuan'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildQuickActionItem(IconData icon, String label) {
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 15,
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
+          child: Icon(icon, color: const Color(0xFF5C6BC0), size: 28),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSection({required String title, required List<Widget> items}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.03),
+                  blurRadius: 20,
+                  offset: const Offset(0, 10),
+                ),
+              ],
+            ),
+            child: Column(
+              children: items,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildListTile(IconData icon, String title, {required bool isLast}) {
+    return Column(
+      children: [
+        ListTile(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+          leading: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF5F6F9),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, color: const Color(0xFF5C6BC0), size: 22),
+          ),
+          title: Text(
+            title,
+            style: const TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          trailing: const Icon(Icons.chevron_right, color: Colors.grey, size: 20),
+          onTap: () {},
+        ),
+        if (!isLast)
+          Divider(
+            height: 1,
+            indent: 70,
+            endIndent: 20,
+            color: Colors.grey.shade100,
+          ),
+      ],
+    );
+  }
+}
