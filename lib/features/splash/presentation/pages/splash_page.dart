@@ -34,11 +34,11 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
       ),
     );
 
-    // Slide dari -500px (di atas layar) → 0 (tengah)
-    _slideAnim = Tween<double>(begin: -500.0, end: 0.0).animate(
+    // Pop out animation: scale dari 0 → 1
+    _slideAnim = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _mainController,
-        curve: const Interval(0.0, 0.50, curve: Curves.easeOutCubic),
+        curve: const Interval(0.0, 0.50, curve: Curves.elasticOut),
       ),
     );
 
@@ -83,8 +83,8 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
           child: AnimatedBuilder(
             animation: _mainController,
             builder: (context, child) {
-              return Transform.translate(
-                offset: Offset(0, _slideAnim.value),
+              return Transform.scale(
+                scale: _slideAnim.value,
                 child: Transform.scale(scale: _scaleAnim.value, child: child),
               );
             },
