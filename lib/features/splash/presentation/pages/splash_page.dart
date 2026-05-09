@@ -66,10 +66,7 @@ class _SplashPageState extends State<SplashPage>
             builder: (context, child) {
               return Transform.translate(
                 offset: Offset(0, _slideAnim.value),
-                child: Transform.scale(
-                  scale: _scaleAnim.value,
-                  child: child,
-                ),
+                child: Transform.scale(scale: _scaleAnim.value, child: child),
               );
             },
             child: _buildLogo(),
@@ -80,12 +77,12 @@ class _SplashPageState extends State<SplashPage>
   }
 
   Widget _buildLogo() {
-    return SizedBox(
-      width: 214.72,
-      height: 128.40,
-      child: Image.asset(
-        'assets/images/splash_logo.png',
-        fit: BoxFit.contain,
+    return const Text(
+      'Hello',
+      style: TextStyle(
+        fontSize: 72,
+        fontWeight: FontWeight.bold,
+        color: Color(0xFF2B37D4),
       ),
     );
   }
