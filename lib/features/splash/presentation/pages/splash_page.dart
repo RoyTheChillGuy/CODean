@@ -8,29 +8,36 @@ class SplashPage extends StatefulWidget {
   State<SplashPage> createState() => _SplashPageState();
 }
 
-class _SplashPageState extends State<SplashPage>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-
-  // Phase 1 — logo turun dari atas layar ke tengah (0% → 50%)
+class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
+  late final AnimationController _mainController;
+  late final List<AnimationController> _letterControllers;
   late final Animation<double> _slideAnim;
-
-  // Phase 2 — logo diam sebentar lalu zoom fill screen (65% → 100%)
   late final Animation<double> _scaleAnim;
+
+  final String _text = 'Hello';
 
   @override
   void initState() {
     super.initState();
 
-    _controller = AnimationController(
+    _mainController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 2200),
+    );
+
+    // Initialize letter controllers untuk bounce animation
+    _letterControllers = List.generate(
+      _text.length,
+      (index) => AnimationController(
+        vsync: this,
+        duration: const Duration(milliseconds: 600),
+      ),
     );
 
     // Slide dari -500px (di atas layar) → 0 (tengah)
     _slideAnim = Tween<double>(begin: -500.0, end: 0.0).animate(
       CurvedAnimation(
-        parent: _controller,
+        parent: _mainController,
         curve: const Interval(0.0, 0.50, curve: Curves.easeOutCubic),
       ),
     );
@@ -38,20 +45,32 @@ class _SplashPageState extends State<SplashPage>
     // Zoom dari ukuran normal (1.0) → sangat besar (40x) hingga memenuhi layar
     _scaleAnim = Tween<double>(begin: 1.0, end: 40.0).animate(
       CurvedAnimation(
-        parent: _controller,
+        parent: _mainController,
         curve: const Interval(0.65, 1.0, curve: Curves.easeInCubic),
       ),
     );
 
-    // Navigasi ke splash screen kedua setelah animasi selesai
-    _controller.forward().then((_) {
+    // Start main animation
+    _mainController.forward().then((_) {
       if (mounted) context.go('/splash2');
     });
+
+    // Start letter bounce animations with delay
+    for (int i = 0; i < _letterControllers.length; i++) {
+      Future.delayed(Duration(milliseconds: 200 * i), () {
+        if (mounted) {
+          _letterControllers[i].forward();
+        }
+      });
+    }
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _mainController.dispose();
+    for (var controller in _letterControllers) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
@@ -62,7 +81,7 @@ class _SplashPageState extends State<SplashPage>
       body: ClipRect(
         child: Center(
           child: AnimatedBuilder(
-            animation: _controller,
+            animation: _mainController,
             builder: (context, child) {
               return Transform.translate(
                 offset: Offset(0, _slideAnim.value),
@@ -77,13 +96,40 @@ class _SplashPageState extends State<SplashPage>
   }
 
   Widget _buildLogo() {
-    return const Text(
-      'Hello',
-      style: TextStyle(
-        fontSize: 72,
-        fontWeight: FontWeight.bold,
-        color: Color(0xFF2B37D4),
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(
+        _text.length,
+        (index) => AnimatedBuilder(
+          animation: _letterControllers[index],
+          builder: (context, child) {
+            // Bounce animation: up and down
+            final bounceValue = _letterControllers[index].value;
+            final offset = _calculateBounceOffset(bounceValue);
+
+            return Transform.translate(offset: Offset(0, offset), child: child);
+          },
+          child: Text(
+            _text[index],
+            style: const TextStyle(
+              fontSize: 72,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF2B37D4),
+            ),
+          ),
+        ),
       ),
     );
+  }
+
+  double _calculateBounceOffset(double value) {
+    // Bounce curve: goes down then up
+    if (value < 0.5) {
+      // First half: go down
+      return (value * 2) * 20; // Max 20px down
+    } else {
+      // Second half: go up
+      return (1 - (value - 0.5) * 2) * 20; // Back to 0
+    }
   }
 }
