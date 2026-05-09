@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -111,10 +112,10 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
           },
           child: Text(
             _text[index],
-            style: const TextStyle(
+            style: GoogleFonts.archivoBlack(
               fontSize: 72,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF2B37D4),
+              color: const Color(0xFF2B37D4),
             ),
           ),
         ),
